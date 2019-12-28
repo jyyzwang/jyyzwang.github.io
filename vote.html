@@ -12,38 +12,311 @@
 <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-<link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+<link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">   
+   
 </head>
 
 <body>
 <section class="page-header">
-  <h1 class="project-name">生成随机数网站，请按数字重新获取！</h1>
-  <h2 class="project-name">用于班级元旦晚会随机抽取学生表演！
+  <h1 class="project-name">生成随机数</h1>
+  <h2 class="project-name">用于班级2020年元旦晚会随机抽取学生表演！
   <h2 class="project-tagline">计算机17级5班班主任王瑞斌制作</h2>
 </section>
-<section class="main-content">
-  
-  <p><strong><a href="vote.html" style="font-size:150px;text-align:center;">
-  <script type="text/javascript">
- 
-	function getrandom(min, max){
+<section class="main-content">    
+    <script type="text/javascript"> 
+	   function getrandom(min, max){
       // 若max不存在 min 赋值给max,并重新赋值min
-     if(max == null){
-          max = min;  
-          min = 0;
-     }
-     return min+ Math.floor(Math.random()*(max-min+1))
-}
-	document.write("随机数\xa0\xa0"+getrandom(1,57))
-	
+            if(max == null){
+                max = min;  
+                min = 0;
+            }
+     var randomvalue1 = min+ Math.floor(Math.random()*(max-min+1))
+     document.getElementById("randominputbuttonvalue").value = randomvalue1;
+       }
 	</script>
-	
-	
-  </a></strong>  
-  </p>
+   
+    <button id="randombutton" style="font-size:120px;text-align:center;" onClick="getrandom(1,52)">生成随机数</button>
+    <strong><input type="button"  id="randominputbuttonvalue" value="？"  style="font-size:130px;text-align:center;" /></strong>
+    
+    <p>
+        <!--计算机17级5班在校学生名单为20191226 14点的表，排除长期不在校同学，以及李弘业、李帅、孟繁顺、陶朦、许天西请假。在校学生总计52人-->
+   <table border="0" style="font-size:34px;margin: auto；text-align: center;position:relative;margin-left:10%">
+      <caption style="font-size:50px;">
+        计算机17级5班在校学生名单（在校学生52人）
+      </caption>
+      <tbody align="center">
+        <tr>
+          <th scope="col">序号</th>
+          <th scope="col">姓名</th>
+          <th scope="col">性别</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>安国良</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>毕昕昕</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>常德民</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>陈舒舒</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>董贺赠</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>董亚鹏</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>高古祥</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>郝敬硕</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>侯向阳</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>贾来庆</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>姜广金</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>蒋之杭</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>康衍嘉</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>孔祥雨</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>李国明</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td>李如磊</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td>梁作贺</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td>刘禄灿</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>19</td>
+          <td>刘增靖</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>20</td>
+          <td>逯文贺</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>21</td>
+          <td>米继正</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>22</td>
+          <td>田德全</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>23</td>
+          <td>吴效晨</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>24</td>
+          <td>武庆豪</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>25</td>
+          <td>武绍伟</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>26</td>
+          <td>谢经亚</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>27</td>
+          <td>徐博</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>28</td>
+          <td>薛现贺</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>29</td>
+          <td>展文章</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>30</td>
+          <td>张瑞宽</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>31</td>
+          <td>张亚鹏</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>32</td>
+          <td>周国哲</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>33</td>
+          <td>冯慧兰</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>34</td>
+          <td>冯文硕</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>35</td>
+          <td>冯瑶瑶</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>36</td>
+          <td>郝夏蔚</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>37</td>
+          <td>侯梦茹</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>38</td>
+          <td>李梦</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>39</td>
+          <td>李淼</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>40</td>
+          <td>李秋蕊</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>41</td>
+          <td>李亚如</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>42</td>
+          <td>李娅宁</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>43</td>
+          <td>吕玉平</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>44</td>
+          <td>孟玉婉</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>45</td>
+          <td>邵亚慧</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>46</td>
+          <td>申亚丽</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>47</td>
+          <td>王苗苗</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>48</td>
+          <td>王倩倩</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>49</td>
+          <td>魏艳丽</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>50</td>
+          <td>闫淑洁</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>51</td>
+          <td>于露</td>
+          <td>女</td>
+        </tr>
+        <tr>
+          <td>52</td>
+          <td>张爽</td>
+          <td>女</td>
+        </tr>        
+      </tbody>
+    </table>
+    </p >    
+    
   
   <footer class="site-footer"> 
-  <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span> 
+    <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span> 
   </footer>
 </section>
 </body>
