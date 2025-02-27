@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>智能班级随机点名系统</title>
+  
+    <style>
+        :root {
+            --primary-color: #2196F3;
+            --secondary-color: #4CAF50;
+        }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .class-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .class-btn {
+            padding: 20px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 12px;
+            background: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .class-btn:hover {
+            transform: scale(1.05);
+        }
+        #main-btn {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            font-size: 2.5em;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            margin: 50px 0;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        #result {
+            font-size: 3em;
+            color: #333;
+            min-height: 80px;
+            padding: 20px;
+        }
+        .current-class {
+            font-size: 1.5em;
+            color: #666;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="class-selector">
+        <button class="class-btn" onclick="selectClass('class5')">24级5班</button>
+        <button class="class-btn" onclick="selectClass('class34')">24级3班4班</button>
+    </div>
+    
+    <div class="current-class" id="currentClass">请先选择班级</div>
+    <button id="main-btn" onclick="startRoll()" disabled>开始点名</button>
+    <div id="result"></div>
+
+    <script>
+        // 班级数据[1,6](@ref)
+        const classes = {
+            class5: [
+                "姜潇", "唐庆傲", "王佳依", "国浩阳", "张浩哲", "靳储鑫", 
+                "刘赛赛", "丛昊轩", "李世杰", "郑言哲", "李心怡", "王泽宇",
+                "李新宇", "刘涵", "于海川", "苑培栋", "田岩", "周慕高",
+                "邓淑杰", "逯与尊", "郝淑亚", "王奥祥", "秦梓昂", "张冠宇",
+                "苏召钦", "杨思远", "奚宏耀", "黄轲", "刘佳成", "杨舒娅",
+                "解琛琛", "佀浩然", "田中奥", "郝子含", "李昊冬", "肖作官",
+                "徐中原", "许奥杰", "逯佳欣", "李嘉兴", "于涛宁", "孙国豪"
+            ],
+            class34: [
+                "白光远", "毕良政", "卜佳欣", "卜子硕", "曹培孜", "常萌萌",
+                "褚清清", "冯静璇", "宇佳", "付川", "高紫茹", "郭庆涛",
+                "贺静茹", "李华昌", "李文佳", "李艳恒", "李颖", "刘锦绣",
+                "刘若征", "刘雨姗", "宁本达", "欧阳振鲁", "孙庆林", "田素状",
+                "王书瑶", "王文冠", "王欣然", "王子豪", "魏子健", "肖家乐",
+                "谢紫涵", "徐杜鹃", "闫考", "杨秉书", "姚慧玲", "姚念尊",
+                "张成赛", "张美涵", "张子诺", "赵红昊", "赵亚菲"
+            ]
+        };
+
+        let currentClass = null;
+        let isRolling = false;
+        let intervalId;
+
+        function selectClass(className) {
+            currentClass = className;
+            document.getElementById('currentClass').textContent = `当前班级：${className === 'class5' ? '24级5班' : '24级3班4班'}`;
+            document.getElementById('main-btn').disabled = false;
+        }
+
+        function startRoll() {
+            const btn = document.getElementById('main-btn');
+            if (!isRolling) {
+                isRolling = true;
+                btn.textContent = "停止";
+                intervalId = setInterval(updateName, 50);
+            } else {
+                clearInterval(intervalId);
+                isRolling = false;
+                btn.textContent = "开始点名";
+                // 显示最终结果
+                const finalIndex = Math.floor(Math.random() * classes[currentClass].length);
+                document.getElementById('result').textContent = classes[currentClass][finalIndex];
+            }
+        }
+
+        function updateName() {
+            const randomIndex = Math.floor(Math.random() * classes[currentClass].length);
+            document.getElementById('result').textContent = classes[currentClass][randomIndex];
+        }
+    </script>
+</body>
+</html>
