@@ -1,42 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学生随机点名</title>
+    <title>学生随机点名系统</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
         }
 
         select {
-            font-size: 20px;
-            margin: 20px;
+            padding: 10px;
+            font-size: 16px;
+            margin: 20px 0;
         }
 
         button {
-            font-size: 30px;
             padding: 20px 40px;
-            margin: 20px;
+            font-size: 24px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
         }
 
         #result {
-            font-size: 50px;
-            margin: 20px;
+            font-size: 60px;
+            color: #d9534f;
+            margin: 40px 0;
+            text-align: center;
         }
 
         table {
             width: 80%;
-            margin: 20px auto;
             border-collapse: collapse;
+            margin-top: 40px;
         }
 
         th,
         td {
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
         }
     </style>
 </head>
@@ -49,12 +78,10 @@
         <option value="24级4班">24级4班</option>
         <option value="24级3班4班合并">24级3班4班合并</option>
     </select>
-    <button onclick="randomSelect()">随机点名</button>
+    <button id="startStopButton" onclick="toggleRollCall()">开始点名</button>
     <div id="result"></div>
 
-    <!-- 显示学生列表的表格 -->
-    <h2>学生列表</h2>
-    <table id="studentTable">
+    <table>
         <thead>
             <tr>
                 <th>班级</th>
@@ -62,78 +89,84 @@
                 <th>姓名</th>
             </tr>
         </thead>
-        <tbody>
-            <!-- 表格内容将通过JavaScript动态填充 -->
+        <tbody id="studentList">
         </tbody>
     </table>
 
     <script>
-        // 定义各个班级的学生列表
-        const classStudents = {
+        // 学生列表
+        const students = {
             "24级1班": [
-                "王淑慧", "刘奥", "张佳敏", "王群群", "张缘馨", "董成志", "张雨菲", "高志凯", "贾先冲",
-                "刘相博", "薛婉婷", "谢京奥", "张腾", "谢娜", "高征", "刘舒欣", "刘少康", "李雪涵",
-                "孙淑敏", "田子恒", "郎文清", "孔耀飞", "王梓鑫", "侯涵若", "赵梓滢", "罗灿", "王雨晴",
-                "毕梦洁", "王汝鹏", "鲍天睿", "高冠志", "刘雨馨", "黄承泽", "张紫腾", "张圆梦", "王驰",
-                "张雨欣", "闫茂森", "崔锦程", "邓广辉", "李梦宇", "张楷顺", "郝芮", "王天宇", "郭雨欣",
-                "解梦瑶", "韩欣然", "许允卓", "姜哲铭", "王一诺", "王韵斐", "李大全", "刘安鲁", "杨永哲"
+                "王淑慧", "刘奥", "张佳敏", "王群群", "张缘馨", "董成志", "张雨菲", "高志凯", "贾先冲", "刘相博",
+                "薛婉婷", "谢京奥", "张腾", "谢娜", "高征", "刘舒欣", "刘少康", "李雪涵", "孙淑敏", "田子恒",
+                "郎文清", "孔耀飞", "王梓鑫", "侯涵若", "赵梓滢", "罗灿", "王雨晴", "毕梦洁", "王汝鹏", "鲍天睿",
+                "高冠志", "刘雨馨", "黄承泽", "张紫腾", "张圆梦", "王驰", "张雨欣", "闫茂森", "崔锦程", "邓广辉",
+                "李梦宇", "张楷顺", "郝芮", "王天宇", "郭雨欣", "解梦瑶", "韩欣然", "许允卓", "姜哲铭", "王一诺",
+                "王韵斐", "李大全", "刘安鲁", "杨永哲"
             ],
             "24级3班": [
-                "蔡睿博", "蔡宗旋", "高贯奥", "郭骏", "郝怀志", "郝宇泽", "李昊", "李雨泽", "刘贺",
-                "刘培涛", "路志远", "孙宏志", "田正茂", "王明欢", "王铭钦", "魏祥健", "许家鑫",
-                "于志强", "左俊恒", "卜明瑶", "陈雅茹", "李卓阳", "董馨怡", "冯梦蕊", "蒋茹欣",
-                "李冉冉", "刘宇晨", "卢甜甜", "鹿雨晴", "苏文悦", "王慧欣", "杨紫悦", "姚若依",
-                "张婷", "张钰佳", "关奥宁", "刘永志", "高佳倪"
+                "蔡睿博", "蔡宗旋", "高贯奥", "郭骏", "郝怀志", "郝宇泽", "李昊", "李雨泽", "刘贺", "刘培涛",
+                "路志远", "孙宏志", "田正茂", "王明欢", "王铭钦", "魏祥健", "许家鑫", "于志强", "左俊恒",
+                "卜明瑶", "陈雅茹", "李卓阳", "董馨怡", "冯梦蕊", "蒋茹欣", "李冉冉", "刘宇晨", "卢甜甜",
+                "鹿雨晴", "苏文悦", "王慧欣", "杨紫悦", "姚若依", "张婷", "张钰佳", "关奥宁", "刘永志", "高佳倪"
             ],
             "24级4班": [
-                "卢远", "魏宇晴", "李雨泽", "李勇喆", "刘聪慧", "冯文博", "苏衍闯", "王梦琪",
-                "闫霜", "葛同伟", "何慧", "马晓雨", "郭凡庆", "谢周洋", "张紫茹", "马陈娟",
-                "张舒宁", "王树志", "安玉菲", "侯瑜琪", "李雨舒", "张雅静", "程长", "路舒轩",
-                "李欣怡", "张昌宇", "程一诺", "田海静", "刘承栋", "高紫童", "李文博", "刘邦凯",
-                "李燕嫡", "王士豪", "赵紫诺", "吴景阔"
+                "卢远", "魏宇晴", "李雨泽", "李勇喆", "刘聪慧", "冯文博", "苏衍闯", "王梦琪", "闫霜", "葛同伟",
+                "何慧", "马晓雨", "郭凡庆", "谢周洋", "张紫茹", "马陈娟", "张舒宁", "王树志", "安玉菲", "侯瑜琪",
+                "李雨舒", "张雅静", "程长", "路舒轩", "李欣怡", "张昌宇", "程一诺", "田海静", "刘承栋", "高紫童",
+                "李文博", "刘邦凯", "李燕嫡", "王士豪", "赵紫诺", "吴景阔"
             ],
             "24级3班4班合并": [
-                "蔡睿博", "蔡宗旋", "高贯奥", "郭骏", "郝怀志", "郝宇泽", "李昊", "李雨泽", "刘贺",
-                "刘培涛", "路志远", "孙宏志", "田正茂", "王明欢", "王铭钦", "魏祥健", "许家鑫",
-                "于志强", "左俊恒", "卜明瑶", "陈雅茹", "李卓阳", "董馨怡", "冯梦蕊", "蒋茹欣",
-                "李冉冉", "刘宇晨", "卢甜甜", "鹿雨晴", "苏文悦", "王慧欣", "杨紫悦", "姚若依",
-                "张婷", "张钰佳", "关奥宁", "刘永志", "高佳倪", "卢远", "魏宇晴", "李雨泽",
-                "李勇喆", "刘聪慧", "冯文博", "苏衍闯", "王梦琪", "闫霜", "葛同伟", "何慧",
-                "马晓雨", "郭凡庆", "谢周洋", "张紫茹", "马陈娟", "张舒宁", "王树志", "安玉菲",
-                "侯瑜琪", "李雨舒", "张雅静", "程长", "路舒轩", "李欣怡", "张昌宇", "程一诺",
-                "田海静", "刘承栋", "高紫童", "李文博", "刘邦凯", "李燕嫡", "王士豪", "赵紫诺",
-                "吴景阔"
+                "蔡睿博", "蔡宗旋", "高贯奥", "郭骏", "郝怀志", "郝宇泽", "李昊", "李雨泽", "刘贺", "刘培涛",
+                "路志远", "孙宏志", "田正茂", "王明欢", "王铭钦", "魏祥健", "许家鑫", "于志强", "左俊恒",
+                "卜明瑶", "陈雅茹", "李卓阳", "董馨怡", "冯梦蕊", "蒋茹欣", "李冉冉", "刘宇晨", "卢甜甜",
+                "鹿雨晴", "苏文悦", "王慧欣", "杨紫悦", "姚若依", "张婷", "张钰佳", "关奥宁", "刘永志", "高佳倪",
+                "卢远", "魏宇晴", "李雨泽", "李勇喆", "刘聪慧", "冯文博", "苏衍闯", "王梦琪", "闫霜", "葛同伟",
+                "何慧", "马晓雨", "郭凡庆", "谢周洋", "张紫茹", "马陈娟", "张舒宁", "王树志", "安玉菲", "侯瑜琪",
+                "李雨舒", "张雅静", "程长", "路舒轩", "李欣怡", "张昌宇", "程一诺", "田海静", "刘承栋", "高紫童",
+                "李文博", "刘邦凯", "李燕嫡", "王士豪", "赵紫诺", "吴景阔"
             ]
         };
 
         // 填充学生列表表格
-        const tableBody = document.querySelector("#studentTable tbody");
-        for (const [className, students] of Object.entries(classStudents)) {
-            students.forEach((student, index) => {
-                const row = document.createElement("tr");
-                const classCell = document.createElement("td");
-                const indexCell = document.createElement("td");
-                const nameCell = document.createElement("td");
+        const studentList = document.getElementById('studentList');
+        for (const [className, classStudents] of Object.entries(students)) {
+            classStudents.forEach((student, index) => {
+                const row = document.createElement('tr');
+                const classCell = document.createElement('td');
+                const indexCell = document.createElement('td');
+                const nameCell = document.createElement('td');
 
-                classCell.textContent = className;
+                classCell.textContent = index === 0 ? className : '';
                 indexCell.textContent = index + 1;
                 nameCell.textContent = student;
 
                 row.appendChild(classCell);
                 row.appendChild(indexCell);
                 row.appendChild(nameCell);
-                tableBody.appendChild(row);
+                studentList.appendChild(row);
             });
         }
 
-        // 随机点名函数
-        function randomSelect() {
-            const classSelector = document.getElementById("classSelector");
-            const selectedClass = classSelector.value;
-            const students = classStudents[selectedClass];
-            const randomIndex = Math.floor(Math.random() * students.length);
-            const resultDiv = document.getElementById("result");
-            resultDiv.textContent = students[randomIndex];
+        let intervalId;
+        const resultDiv = document.getElementById('result');
+        const startStopButton = document.getElementById('startStopButton');
+        const classSelector = document.getElementById('classSelector');
+
+        function toggleRollCall() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+                startStopButton.textContent = "开始点名";
+            } else {
+                const selectedClass = classSelector.value;
+                const classStudents = students[selectedClass];
+                intervalId = setInterval(() => {
+                    const randomIndex = Math.floor(Math.random() * classStudents.length);
+                    resultDiv.textContent = classStudents[randomIndex];
+                }, 100);
+                startStopButton.textContent = "停止点名";
+            }
         }
     </script>
 </body>
