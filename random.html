@@ -165,6 +165,7 @@
 
         let rolling = false;
         let intervalId;
+        let timeoutId;
 
         function toggleRolling() {
             const button = document.getElementById('startStopButton');
@@ -179,10 +180,18 @@
                     const randomIndex = Math.floor(Math.random() * studentList.length);
                     resultDiv.textContent = studentList[randomIndex];
                 }, 100);
+
+                // 设置 3 秒后自动停止
+                timeoutId = setTimeout(() => {
+                    rolling = false;
+                    button.textContent = "开始";
+                    clearInterval(intervalId);
+                }, 3000);
             } else {
                 rolling = false;
                 button.textContent = "开始";
                 clearInterval(intervalId);
+                clearTimeout(timeoutId); // 如果手动停止，清除定时器
             }
         }
     </script>
