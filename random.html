@@ -1,123 +1,141 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>智能课堂点名系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生随机点名</title>
     <style>
-        /* 大屏幕适配样式 */
         body {
-            font-family: "Microsoft YaHei";
+            font-family: Arial, sans-serif;
             text-align: center;
-            padding: 20px;
-            background: #f0f8ff;
         }
-        #classSelect {
-            padding: 15px;
-            font-size: 24px;
-            margin-bottom: 30px;
+
+        select {
+            font-size: 20px;
+            margin: 20px;
         }
-        #startBtn {
-            padding: 40px 80px;
-            font-size: 48px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            margin: 30px 0;
+
+        button {
+            font-size: 30px;
+            padding: 20px 40px;
+            margin: 20px;
         }
+
         #result {
-            font-size: 72px;
-            color: #2196F3;
-            margin: 50px 0;
-            min-height: 100px;
+            font-size: 50px;
+            margin: 20px;
         }
-        .student-table {
-            margin: 50px auto;
+
+        table {
             width: 80%;
+            margin: 20px auto;
             border-collapse: collapse;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         }
-        .student-table th, 
-        .student-table td {
-            padding: 20px;
-            border: 1px solid #ddd;
-            font-size: 24px;
-        }
-        .student-table th {
-            background: #2196F3;
-            color: white;
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 10px;
         }
     </style>
 </head>
+
 <body>
-    <select id="classSelect">
-        <option value="class1">24级1班</option>
-        <option value="class3">24级3班</option>
-        <option value="class4">24级4班</option>
-        <option value="class34">24级3+4班合并</option>
+    <h1>学生随机点名系统</h1>
+    <select id="classSelector">
+        <option value="24级1班">24级1班</option>
+        <option value="24级3班">24级3班</option>
+        <option value="24级4班">24级4班</option>
+        <option value="24级3班4班合并">24级3班4班合并</option>
     </select>
+    <button onclick="randomSelect()">随机点名</button>
+    <div id="result"></div>
 
-    <button id="startBtn" onclick="startRoll()">开始点名</button>
-    <div id="result">准备就绪</div>
-
-    <!-- 三个班级的表格 -->
-    <div id="tablesContainer">
-        <table class="student-table" id="class1Table"></table>
-        <table class="student-table" id="class3Table"></table>
-        <table class="student-table" id="class4Table"></table>
-    </div>
+    <!-- 显示学生列表的表格 -->
+    <h2>学生列表</h2>
+    <table id="studentTable">
+        <thead>
+            <tr>
+                <th>班级</th>
+                <th>学生序号</th>
+                <th>姓名</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 表格内容将通过JavaScript动态填充 -->
+        </tbody>
+    </table>
 
     <script>
-        // 学生数据
-        const students = {
-            class1: [/* 1班名单 */],
-            class3: [/* 3班名单 */],
-            class4: [/* 4班名单 */],
-            class34: [/* 合并班名单 */]
+        // 定义各个班级的学生列表
+        const classStudents = {
+            "24级1班": [
+                "王淑慧", "刘奥", "张佳敏", "王群群", "张缘馨", "董成志", "张雨菲", "高志凯", "贾先冲",
+                "刘相博", "薛婉婷", "谢京奥", "张腾", "谢娜", "高征", "刘舒欣", "刘少康", "李雪涵",
+                "孙淑敏", "田子恒", "郎文清", "孔耀飞", "王梓鑫", "侯涵若", "赵梓滢", "罗灿", "王雨晴",
+                "毕梦洁", "王汝鹏", "鲍天睿", "高冠志", "刘雨馨", "黄承泽", "张紫腾", "张圆梦", "王驰",
+                "张雨欣", "闫茂森", "崔锦程", "邓广辉", "李梦宇", "张楷顺", "郝芮", "王天宇", "郭雨欣",
+                "解梦瑶", "韩欣然", "许允卓", "姜哲铭", "王一诺", "王韵斐", "李大全", "刘安鲁", "杨永哲"
+            ],
+            "24级3班": [
+                "蔡睿博", "蔡宗旋", "高贯奥", "郭骏", "郝怀志", "郝宇泽", "李昊", "李雨泽", "刘贺",
+                "刘培涛", "路志远", "孙宏志", "田正茂", "王明欢", "王铭钦", "魏祥健", "许家鑫",
+                "于志强", "左俊恒", "卜明瑶", "陈雅茹", "李卓阳", "董馨怡", "冯梦蕊", "蒋茹欣",
+                "李冉冉", "刘宇晨", "卢甜甜", "鹿雨晴", "苏文悦", "王慧欣", "杨紫悦", "姚若依",
+                "张婷", "张钰佳", "关奥宁", "刘永志", "高佳倪"
+            ],
+            "24级4班": [
+                "卢远", "魏宇晴", "李雨泽", "李勇喆", "刘聪慧", "冯文博", "苏衍闯", "王梦琪",
+                "闫霜", "葛同伟", "何慧", "马晓雨", "郭凡庆", "谢周洋", "张紫茹", "马陈娟",
+                "张舒宁", "王树志", "安玉菲", "侯瑜琪", "李雨舒", "张雅静", "程长", "路舒轩",
+                "李欣怡", "张昌宇", "程一诺", "田海静", "刘承栋", "高紫童", "李文博", "刘邦凯",
+                "李燕嫡", "王士豪", "赵紫诺", "吴景阔"
+            ],
+            "24级3班4班合并": [
+                "蔡睿博", "蔡宗旋", "高贯奥", "郭骏", "郝怀志", "郝宇泽", "李昊", "李雨泽", "刘贺",
+                "刘培涛", "路志远", "孙宏志", "田正茂", "王明欢", "王铭钦", "魏祥健", "许家鑫",
+                "于志强", "左俊恒", "卜明瑶", "陈雅茹", "李卓阳", "董馨怡", "冯梦蕊", "蒋茹欣",
+                "李冉冉", "刘宇晨", "卢甜甜", "鹿雨晴", "苏文悦", "王慧欣", "杨紫悦", "姚若依",
+                "张婷", "张钰佳", "关奥宁", "刘永志", "高佳倪", "卢远", "魏宇晴", "李雨泽",
+                "李勇喆", "刘聪慧", "冯文博", "苏衍闯", "王梦琪", "闫霜", "葛同伟", "何慧",
+                "马晓雨", "郭凡庆", "谢周洋", "张紫茹", "马陈娟", "张舒宁", "王树志", "安玉菲",
+                "侯瑜琪", "李雨舒", "张雅静", "程长", "路舒轩", "李欣怡", "张昌宇", "程一诺",
+                "田海静", "刘承栋", "高紫童", "李文博", "刘邦凯", "李燕嫡", "王士豪", "赵紫诺",
+                "吴景阔"
+            ]
         };
 
-        // 初始化表格
-        function initTables() {
-            ['class1', 'class3', 'class4'].forEach(cls => {
-                const table = document.getElementById(`${cls}Table`);
-                table.innerHTML = `
-                    <caption style="font-size: 36px">${cls.replace('class','')}学生名单</caption>
-                    <tr><th>序号</th><th>姓名</th></tr>
-                    ${students[cls].map((name, index) => 
-                        `<tr><td>${index+1}</td><td>${name}</td></tr>`
-                    ).join('')}
-                `;
+        // 填充学生列表表格
+        const tableBody = document.querySelector("#studentTable tbody");
+        for (const [className, students] of Object.entries(classStudents)) {
+            students.forEach((student, index) => {
+                const row = document.createElement("tr");
+                const classCell = document.createElement("td");
+                const indexCell = document.createElement("td");
+                const nameCell = document.createElement("td");
+
+                classCell.textContent = className;
+                indexCell.textContent = index + 1;
+                nameCell.textContent = student;
+
+                row.appendChild(classCell);
+                row.appendChild(indexCell);
+                row.appendChild(nameCell);
+                tableBody.appendChild(row);
             });
         }
 
-        // 随机点名逻辑
-        let isRolling = false;
-        let intervalId;
-
-        function startRoll() {
-            const btn = document.getElementById('startBtn');
-            if (!isRolling) {
-                isRolling = true;
-                btn.innerHTML = "停止点名";
-                btn.style.background = "#f44336";
-                
-                intervalId = setInterval(() => {
-                    const cls = document.getElementById('classSelect').value;
-                    const names = students[cls];
-                    const randomIndex = Math.floor(Math.random() * names.length);
-                    document.getElementById('result').innerHTML = names[randomIndex];
-                }, 100);
-            } else {
-                clearInterval(intervalId);
-                isRolling = false;
-                btn.innerHTML = "开始点名";
-                btn.style.background = "#4CAF50";
-            }
+        // 随机点名函数
+        function randomSelect() {
+            const classSelector = document.getElementById("classSelector");
+            const selectedClass = classSelector.value;
+            const students = classStudents[selectedClass];
+            const randomIndex = Math.floor(Math.random() * students.length);
+            const resultDiv = document.getElementById("result");
+            resultDiv.textContent = students[randomIndex];
         }
-
-        // 页面加载时初始化
-        window.onload = initTables;
     </script>
 </body>
+
 </html>
