@@ -2,130 +2,122 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>智能班级随机点名系统</title>
-  
+    <title>智能课堂点名系统</title>
     <style>
-        :root {
-            --primary-color: #2196F3;
-            --secondary-color: #4CAF50;
-        }
+        /* 大屏幕适配样式 */
         body {
-            font-family: 'Microsoft YaHei', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            background: #f0f2f5;
-            margin: 0;
+            font-family: "Microsoft YaHei";
+            text-align: center;
             padding: 20px;
+            background: #f0f8ff;
         }
-        .class-selector {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+        #classSelect {
+            padding: 15px;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        #startBtn {
+            padding: 40px 80px;
+            font-size: 48px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
             margin: 30px 0;
         }
-        .class-btn {
-            padding: 20px 30px;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 12px;
-            background: var(--primary-color);
-            color: white;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .class-btn:hover {
-            transform: scale(1.05);
-        }
-        #main-btn {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            font-size: 2.5em;
-            background: var(--secondary-color);
-            color: white;
-            border: none;
-            margin: 50px 0;
-            cursor: pointer;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-        }
         #result {
-            font-size: 3em;
-            color: #333;
-            min-height: 80px;
-            padding: 20px;
+            font-size: 72px;
+            color: #2196F3;
+            margin: 50px 0;
+            min-height: 100px;
         }
-        .current-class {
-            font-size: 1.5em;
-            color: #666;
-            margin: 20px 0;
+        .student-table {
+            margin: 50px auto;
+            width: 80%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        .student-table th, 
+        .student-table td {
+            padding: 20px;
+            border: 1px solid #ddd;
+            font-size: 24px;
+        }
+        .student-table th {
+            background: #2196F3;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div class="class-selector">
-        <button class="class-btn" onclick="selectClass('class5')">24级5班</button>
-        <button class="class-btn" onclick="selectClass('class34')">24级3班4班</button>
+    <select id="classSelect">
+        <option value="class1">24级1班</option>
+        <option value="class3">24级3班</option>
+        <option value="class4">24级4班</option>
+        <option value="class34">24级3+4班合并</option>
+    </select>
+
+    <button id="startBtn" onclick="startRoll()">开始点名</button>
+    <div id="result">准备就绪</div>
+
+    <!-- 三个班级的表格 -->
+    <div id="tablesContainer">
+        <table class="student-table" id="class1Table"></table>
+        <table class="student-table" id="class3Table"></table>
+        <table class="student-table" id="class4Table"></table>
     </div>
-    
-    <div class="current-class" id="currentClass">请先选择班级</div>
-    <button id="main-btn" onclick="startRoll()" disabled>开始点名</button>
-    <div id="result"></div>
 
     <script>
-        // 班级数据[1,6](@ref)
-        const classes = {
-            class5: [
-                "姜潇", "唐庆傲", "王佳依", "国浩阳", "张浩哲", "靳储鑫", 
-                "刘赛赛", "丛昊轩", "李世杰", "郑言哲", "李心怡", "王泽宇",
-                "李新宇", "刘涵", "于海川", "苑培栋", "田岩", "周慕高",
-                "邓淑杰", "逯与尊", "郝淑亚", "王奥祥", "秦梓昂", "张冠宇",
-                "苏召钦", "杨思远", "奚宏耀", "黄轲", "刘佳成", "杨舒娅",
-                "解琛琛", "佀浩然", "田中奥", "郝子含", "李昊冬", "肖作官",
-                "徐中原", "许奥杰", "逯佳欣", "李嘉兴", "于涛宁", "孙国豪"
-            ],
-            class34: [
-                "白光远", "毕良政", "卜佳欣", "卜子硕", "曹培孜", "常萌萌",
-                "褚清清", "冯静璇", "宇佳", "付川", "高紫茹", "郭庆涛",
-                "贺静茹", "李华昌", "李文佳", "李艳恒", "李颖", "刘锦绣",
-                "刘若征", "刘雨姗", "宁本达", "欧阳振鲁", "孙庆林", "田素状",
-                "王书瑶", "王文冠", "王欣然", "王子豪", "魏子健", "肖家乐",
-                "谢紫涵", "徐杜鹃", "闫考", "杨秉书", "姚慧玲", "姚念尊",
-                "张成赛", "张美涵", "张子诺", "赵红昊", "赵亚菲"
-            ]
+        // 学生数据
+        const students = {
+            class1: [/* 1班名单 */],
+            class3: [/* 3班名单 */],
+            class4: [/* 4班名单 */],
+            class34: [/* 合并班名单 */]
         };
 
-        let currentClass = null;
+        // 初始化表格
+        function initTables() {
+            ['class1', 'class3', 'class4'].forEach(cls => {
+                const table = document.getElementById(`${cls}Table`);
+                table.innerHTML = `
+                    <caption style="font-size: 36px">${cls.replace('class','')}学生名单</caption>
+                    <tr><th>序号</th><th>姓名</th></tr>
+                    ${students[cls].map((name, index) => 
+                        `<tr><td>${index+1}</td><td>${name}</td></tr>`
+                    ).join('')}
+                `;
+            });
+        }
+
+        // 随机点名逻辑
         let isRolling = false;
         let intervalId;
 
-        function selectClass(className) {
-            currentClass = className;
-            document.getElementById('currentClass').textContent = `当前班级：${className === 'class5' ? '24级5班' : '24级3班4班'}`;
-            document.getElementById('main-btn').disabled = false;
-        }
-
         function startRoll() {
-            const btn = document.getElementById('main-btn');
+            const btn = document.getElementById('startBtn');
             if (!isRolling) {
                 isRolling = true;
-                btn.textContent = "停止";
-                intervalId = setInterval(updateName, 50);
+                btn.innerHTML = "停止点名";
+                btn.style.background = "#f44336";
+                
+                intervalId = setInterval(() => {
+                    const cls = document.getElementById('classSelect').value;
+                    const names = students[cls];
+                    const randomIndex = Math.floor(Math.random() * names.length);
+                    document.getElementById('result').innerHTML = names[randomIndex];
+                }, 100);
             } else {
                 clearInterval(intervalId);
                 isRolling = false;
-                btn.textContent = "开始点名";
-                // 显示最终结果
-                const finalIndex = Math.floor(Math.random() * classes[currentClass].length);
-                document.getElementById('result').textContent = classes[currentClass][finalIndex];
+                btn.innerHTML = "开始点名";
+                btn.style.background = "#4CAF50";
             }
         }
 
-        function updateName() {
-            const randomIndex = Math.floor(Math.random() * classes[currentClass].length);
-            document.getElementById('result').textContent = classes[currentClass][randomIndex];
-        }
+        // 页面加载时初始化
+        window.onload = initTables;
     </script>
 </body>
 </html>
