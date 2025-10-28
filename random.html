@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学生随机点名</title>
+    <title>学生随机点名（25级3班、4班）</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,7 +16,6 @@
             justify-content: center;
             min-height: 100vh;
         }
-
         .container {
             width: 80%;
             max-width: 800px;
@@ -27,12 +25,10 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
-
         h1 {
             text-align: center;
             color: #333;
         }
-
         select {
             width: 100%;
             padding: 10px;
@@ -40,7 +36,6 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-
         button {
             width: 100%;
             padding: 20px;
@@ -51,52 +46,45 @@
             font-size: 24px;
             cursor: pointer;
         }
-
         button:hover {
             background-color: #0056b3;
         }
-
         #result {
             text-align: center;
             font-size: 200px;
             margin-top: 20px;
             color: #333;
         }
-
         table {
             width: 80%;
             max-width: 800px;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-
         th,
         td {
             border: 1px solid #ccc;
             padding: 10px;
             text-align: center;
         }
-
         th {
             background-color: #007BFF;
             color: #fff;
         }
     </style>
 </head>
-
 <body>
     <div class="container">
-        <h1>学生随机点名</h1>
+        <h1>学生随机点名（25级3班、4班）</h1>
+        <!-- 班级选择器：替换为25级3班、4班及合并选项 -->
         <select id="classSelector">
-            <option value="24级1班">24级1班</option>
-            <option value="24级3班">24级3班</option>
-            <option value="24级4班">24级4班</option>
-            <option value="24级3班4班合并">24级3班4班合并</option>
+            <option value="25级3班">25级3班</option>
+            <option value="25级4班">25级4班</option>
+            <option value="25级3班4班合并">25级3班4班合并</option>
         </select>
         <button id="startStopButton" onclick="toggleRolling()">开始</button>
         <div id="result"></div>
     </div>
-
     <table>
         <thead>
             <tr>
@@ -107,43 +95,38 @@
         </thead>
         <tbody id="studentTableBody"></tbody>
     </table>
-
     <script>
-        // 学生列表
+        // 学生列表：替换为25级3班、4班数据（已核对文档1、2，确保准确）
         const students = {
-            "24级1班": [
-                "王淑慧", "刘奥", "张佳敏", "王群群", "张缘馨", "董成志", "张雨菲", "高志凯", "贾先冲", "刘相博",
-                "薛婉婷", "谢京奥", "张腾", "谢娜", "高征", "刘舒欣", "刘少康", "李雪涵", "孙淑敏", "田子恒",
-                "郎文清", "孔耀飞", "王梓鑫", "侯涵若", "赵梓滢", "罗灿", "王雨晴", "毕梦洁", "王汝鹏", "鲍天睿",
-                "高冠志", "刘雨馨", "黄承泽", "张紫腾", "张圆梦", "王驰", "张雨欣", "闫茂森", "崔锦程", "邓广辉",
-                "李梦宇", "张楷顺", "郝芮", "王天宇", "郭雨欣", "解梦瑶", "韩欣然", "许允卓", "姜哲铭", "王一诺",
-                "王韵斐", "李大全", "刘安鲁", "杨永哲"
+            "25级3班": [
+                "谢文硕", "郭特", "郝良川", "张宇晴", "张琳森", "徐谦", "程源晓", "刘远鑫", "邵丽园", "徐文秀",
+                "薛宪东", "解瑞姿", "孙嘉怡", "贾宇婷", "张冠群", "孔晓菡", "路作运", "李淑菲", "李志鹏", "李嘉庆",
+                "李淑荣", "孔佩媛", "冯露", "冯钰淑", "张逸非", "于思诺", "谢智康", "王怀峻", "张家滔", "王山昭",
+                "彭泽玉", "孔德赟", "于佳奇", "王谦", "任珂萱", "邵鑫梦", "刘正阳", "申玉尚", "侯文筱", "杨国发"
             ],
-            "24级3班": [
-                "蔡睿博", "蔡宗旋", "高贯奥", "郭骏", "郝怀志", "郝宇泽", "李昊", "李雨泽", "刘贺", "刘培涛",
-                "路志远", "孙宏志", "田正茂", "王明欢", "王铭钦", "魏祥健", "许家鑫", "于志强", "左俊恒",
-                "卜明瑶", "陈雅茹", "李卓阳", "董馨怡", "冯梦蕊", "蒋茹欣", "李冉冉", "刘宇晨", "卢甜甜",
-                "鹿雨晴", "苏文悦", "王慧欣", "杨紫悦", "姚若依", "张婷", "张钰佳", "关奥宁", "刘永志", "高佳倪"
+            "25级4班": [
+                "张瑞彬", "袁思萌", "田佳雯", "郭童", "邓雨晨", "谭理想", "杨述余", "郑言泽", "宋玉存", "赵子诺",
+                "侯思冉", "张艺潇", "李静瑶", "回姿旭", "庞泽", "王相哲", "杨志豪", "许雯萱", "刘毅航", "李犇",
+                "谢文姿", "薛广超", "冯紫霜", "王佳豪", "刘贝贝", "刘博韩", "杜婉盈", "曹紫旋", "王帆", "孙振京",
+                "梁邦泉", "王文佳", "王雨晨", "周敏晨", "田蒙恩", "王梦菲", "王嘉琪", "张文昊", "陶峻熙", "李鹏飞",
+                "靳纪顺", "张坦"
             ],
-            "24级4班": [
-                "卢远", "魏宇晴", "李雨泽", "李勇喆", "刘聪慧", "冯文博", "苏衍闯", "王梦琪", "闫霜", "葛同伟",
-                "何慧", "马晓雨", "郭凡庆", "谢周洋", "张紫茹", "马陈娟", "张舒宁", "王树志", "安玉菲", "侯瑜琪",
-                "李雨舒", "张雅静", "程长", "路舒轩", "李欣怡", "张昌宇", "程一诺", "田海静", "刘承栋", "高紫童",
-                "李文博", "刘邦凯", "李燕嫡", "王士豪", "赵紫诺", "吴景阔"
-            ],
-            "24级3班4班合并": [
-                "蔡睿博", "蔡宗旋", "高贯奥", "郭骏", "郝怀志", "郝宇泽", "李昊", "李雨泽", "刘贺", "刘培涛",
-                "路志远", "孙宏志", "田正茂", "王明欢", "王铭钦", "魏祥健", "许家鑫", "于志强", "左俊恒",
-                "卜明瑶", "陈雅茹", "李卓阳", "董馨怡", "冯梦蕊", "蒋茹欣", "李冉冉", "刘宇晨", "卢甜甜",
-                "鹿雨晴", "苏文悦", "王慧欣", "杨紫悦", "姚若依", "张婷", "张钰佳", "关奥宁", "刘永志", "高佳倪",
-                "卢远", "魏宇晴", "李雨泽", "李勇喆", "刘聪慧", "冯文博", "苏衍闯", "王梦琪", "闫霜", "葛同伟",
-                "何慧", "马晓雨", "郭凡庆", "谢周洋", "张紫茹", "马陈娟", "张舒宁", "王树志", "安玉菲", "侯瑜琪",
-                "李雨舒", "张雅静", "程长", "路舒轩", "李欣怡", "张昌宇", "程一诺", "田海静", "刘承栋", "高紫童",
-                "李文博", "刘邦凯", "李燕嫡", "王士豪", "赵紫诺", "吴景阔"
+            "25级3班4班合并": [
+                // 合并25级3班所有学生
+                "谢文硕", "郭特", "郝良川", "张宇晴", "张琳森", "徐谦", "程源晓", "刘远鑫", "邵丽园", "徐文秀",
+                "薛宪东", "解瑞姿", "孙嘉怡", "贾宇婷", "张冠群", "孔晓菡", "路作运", "李淑菲", "李志鹏", "李嘉庆",
+                "李淑荣", "孔佩媛", "冯露", "冯钰淑", "张逸非", "于思诺", "谢智康", "王怀峻", "张家滔", "王山昭",
+                "彭泽玉", "孔德赟", "于佳奇", "王谦", "任珂萱", "邵鑫梦", "刘正阳", "申玉尚", "侯文筱", "杨国发",
+                // 合并25级4班所有学生
+                "张瑞彬", "袁思萌", "田佳雯", "郭童", "邓雨晨", "谭理想", "杨述余", "郑言泽", "宋玉存", "赵子诺",
+                "侯思冉", "张艺潇", "李静瑶", "回姿旭", "庞泽", "王相哲", "杨志豪", "许雯萱", "刘毅航", "李犇",
+                "谢文姿", "薛广超", "冯紫霜", "王佳豪", "刘贝贝", "刘博韩", "杜婉盈", "曹紫旋", "王帆", "孙振京",
+                "梁邦泉", "王文佳", "王雨晨", "周敏晨", "田蒙恩", "王梦菲", "王嘉琪", "张文昊", "陶峻熙", "李鹏飞",
+                "靳纪顺", "张坦"
             ]
         };
 
-        // 显示学生列表
+        // 显示学生列表（逻辑不变，自动遍历25级数据）
         const tableBody = document.getElementById('studentTableBody');
         for (const [className, studentList] of Object.entries(students)) {
             studentList.forEach((student, index) => {
@@ -151,11 +134,10 @@
                 const classCell = document.createElement('td');
                 const indexCell = document.createElement('td');
                 const nameCell = document.createElement('td');
-
+                // 仅在每个班级第一行显示班级名称（避免重复）
                 classCell.textContent = index === 0 ? className : '';
-                indexCell.textContent = index + 1;
+                indexCell.textContent = index + 1; // 序号从1开始
                 nameCell.textContent = student;
-
                 row.appendChild(classCell);
                 row.appendChild(indexCell);
                 row.appendChild(nameCell);
@@ -163,10 +145,10 @@
             });
         }
 
+        // 随机点名逻辑（完全保留原功能：点击开始/停止、3秒自动停止）
         let rolling = false;
         let intervalId;
         let timeoutId;
-
         function toggleRolling() {
             const button = document.getElementById('startStopButton');
             const resultDiv = document.getElementById('result');
@@ -174,6 +156,7 @@
             const studentList = students[selectedClass];
 
             if (!rolling) {
+                // 开始滚动：100ms切换一次名字
                 rolling = true;
                 button.textContent = "停止";
                 intervalId = setInterval(() => {
@@ -181,20 +164,20 @@
                     resultDiv.textContent = studentList[randomIndex];
                 }, 100);
 
-                // 设置 3 秒后自动停止
+                // 3秒后自动停止（避免忘记点击）
                 timeoutId = setTimeout(() => {
                     rolling = false;
                     button.textContent = "开始";
                     clearInterval(intervalId);
                 }, 3000);
             } else {
+                // 手动停止：清除定时器
                 rolling = false;
                 button.textContent = "开始";
                 clearInterval(intervalId);
-                clearTimeout(timeoutId); // 如果手动停止，清除定时器
+                clearTimeout(timeoutId);
             }
         }
     </script>
 </body>
-
 </html>
