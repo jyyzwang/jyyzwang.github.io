@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>课堂随机点名系统</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        main: '#165DFF',
+        dark: '#0F172A',
+        light: '#38BDF8',
+        success: '#22c55e'
+      },
+      fontFamily: {
+        sans: ['system-ui', 'sans-serif']
+      },
+      keyframes: {
+        flash: {
+          '0%,100%': {textShadow: '0 0 10px #fff,0 0 20px #38BDF8,0 0 40px #165DFF'},
+          '50%': {textShadow: '0 0 20px #fff,0 0 40px #38BDF8,0 0 80px #165DFF'}
+        },
+        bounceIn: {
+          '0%': {transform: 'scale(0.6)', opacity:0},
+          '60%': {transform: 'scale(1.15)'},
+          '100%': {transform: 'scale(1)', opacity:1}
+        },
+        gradient: {
+          '0%': {backgroundPosition: '0% 50%'},
+          '50%': {backgroundPosition: '100% 50%'},
+          '100%': {backgroundPosition: '0% 50%'}
+        },
+        confetti: {
+          '0%': {transform: 'translateY(-10px) rotate(0deg)', opacity: 1},
+          '100%': {transform: 'translateY(100vh) rotate(720deg)', opacity: 0}
+        }
+      },
+      animation: {
+        flash: 'flash 0.7s ease-in-out infinite',
+        bounceIn: 'bounceIn 0.6s ease-out',
+        gradient: 'gradient 8s ease infinite'
+      }
+    }
+  }
+}
+</script>
+<style type="text/tailwindcss">
+@layer utilities {
+  .bg-gradient-animate {
+    background: linear-gradient(-45deg,#0F172A,#1E293B,#0F172A,#162E5C);
+    background-size: 400% 400%;
+  }
+  .text-glow {
+    text-shadow: 0 0 12px #38BDF8,0 0 24px #165DFF;
+  }
+  .card-glow {
+    box-shadow: 0 0 15px rgba(22, 93, 255, 0.35);
+  }
+  .card-checked {
+    @apply bg-success/20 border-success;
+  }
+}
+</style>
+</head>
+<body class="bg-gradient-animate animate-gradient min-h-screen text-white overflow-x-hidden">
+
+<!-- 礼花容器 -->
+<div id="confettiBox" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
+
+<div class="container mx-auto px-4 py-6">
+  <header class="text-center mb-8">
+    <h1 class="text-[clamp(1.8rem,5vw,3rem)] font-bold text-glow">
+      <i class="fa fa-random mr-3"></i>随机点名系统
+    </h1>
+    <p class="text-slate-300 mt-2">共 <span id="totalCount">24</span> 名学生 | 已点 <span id="calledCount">0</span> 人</p>
+  </header>
+
+  <!-- 点名展示大屏 -->
+  <div class="bg-dark/60 backdrop-blur-md rounded-2xl p-6 md:p-10 card-glow mb-8 text-center border border-main/30">
+    <div id="showName" class="text-[clamp(2.4rem,10vw,5rem)] font-bold h-32 flex items-center justify-center transition-all duration-100">
+      准备点名
+    </div>
+    <div class="flex justify-center gap-4 mt-6 flex-wrap">
+      <button id="startBtn" class="px-8 py-3 bg-main hover:bg-main/80 rounded-xl text-xl transition-all active:scale-95">
+        <i class="fa fa-play-circle mr-2"></i>开始点名
+      </button>
+      <button id="resetBtn" class="px-8 py-3 bg-slate-600 hover:bg-slate-500 rounded-xl text-xl transition-all active:scale-95">
+        <i class="fa fa-refresh mr-2"></i>重置名单
+      </button>
+      <button id="fullBtn" class="px-8 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-xl transition-all active:scale-95">
+        <i class="fa fa-expand mr-2"></i>全屏
+      </button>
+    </div>
+  </div>
+
+  <!-- 学生名单网格 -->
+  <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-5 border border-slate-700">
+    <h2 class="text-xl mb-4 text-slate-200"><i class="fa fa-users mr-2"></i>学生名单</h2>
+    <div id="listWrap" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+    </div>
+  </div>
+</div>
+
+<script>
+const studentList = [
+  "赵晨熙","张雨婷","张诺","张淑晗","白光兴","张以诺","于液液","宋鼎寒","徐依晨","庞佳慧",
+  "孙福嘉","张佳惠","赵发威","郑珂欣","陈崇威","王佳羽","刘舒雅","王鹏","杜晨熙","宗嘉豪",
+  "刘慧茹","孟雨涵","许飒","陈阳阳"
+];
+let studentData = studentList.map(name=> ({name, checked:false}));
+let timer = null;
+let isRolling = false;
+const showEl = document.getElementById('showName');
+const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
+const fullBtn = document.getElementById('fullBtn');
+const listWrap = document.getElementById('listWrap');
+const calledCountEl = document.getElementById('calledCount');
+const confettiBox = document.getElementById('confettiBox');
+
+function renderList(){
+  listWrap.innerHTML = '';
+  studentData.forEach((item)=>{
+    const div = document.createElement('div');
+    div.className = `p-3 rounded-lg text-center border border-slate-600 transition-all ${item.checked ? 'card-checked' : 'bg-slate-800/50 hover:bg-slate-700/50'}`;
+    div.innerHTML = `<span>${item.name}</span> ${item.checked ? '<i class="fa fa-check text-success ml-1"></i>' : ''}`;
+    listWrap.appendChild(div);
+  });
+  calledCountEl.innerText = studentData.filter(i=>i.checked).length;
+}
+
+function rollName(){
+  const remaining = studentData.filter(i=>!i.checked);
+  const pool = remaining.length > 0 ? remaining : studentData;
+  const randomIdx = Math.floor(Math.random() * pool.length);
+  showEl.innerText = pool[randomIdx].name;
+}
+
+// 礼花效果
+function fireConfetti(){
+  const colors = ['#165DFF','#38BDF8','#22c55e','#fbbf24','#ef4444','#ec4899','#a855f7'];
+  for(let i=0;i<80;i++){
+    const c = document.createElement('div');
+    const size = Math.random()*10 + 6;
+    c.style.cssText = `position:absolute;top:-20px;left:${Math.random()*100}%;width:${size}px;height:${size*0.4}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:2px;animation:confetti ${Math.random()*2+2}s ease-out forwards;`;
+    confettiBox.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+
+startBtn.onclick = ()=>{
+  if(isRolling){
+    clearInterval(timer);
+    isRolling = false;
+    startBtn.innerHTML = '<i class="fa fa-play-circle mr-2"></i>开始点名';
+    showEl.classList.add('animate-bounceIn','animate-flash');
+    const findName = showEl.innerText;
+    const sItem = studentData.find(i=>i.name === findName);
+    if(sItem) sItem.checked = true;
+    fireConfetti();
+    renderList();
+  }else{
+    showEl.classList.remove('animate-bounceIn','animate-flash');
+    startBtn.innerHTML = '<i class="fa fa-stop-circle mr-2"></i>停止点名';
+    isRolling = true;
+    timer = setInterval(rollName,60);
+  }
+}
+
+resetBtn.onclick = ()=>{
+  clearInterval(timer);
+  isRolling = false;
+  startBtn.innerHTML = '<i class="fa fa-play-circle mr-2"></i>开始点名';
+  showEl.classList.remove('animate-bounceIn','animate-flash');
+  showEl.innerText = '准备点名';
+  studentData = studentList.map(name=> ({name, checked:false}));
+  renderList();
+}
+
+fullBtn.onclick = ()=>{
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+renderList();
+</script>
+</body>
+</html>
